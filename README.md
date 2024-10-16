@@ -1,2 +1,3 @@
 # dotfiles
-kitty config file is in `~/.config/kitty/kitty.config` by defaulty.
+kitty config: ~/.config/kitty/kitty.config
+Rime config: ~/.config/ibus/rime/*
