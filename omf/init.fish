@@ -14,3 +14,5 @@ alias lt='eza --tree $eza_params'
 alias tree='eza --tree $eza_params'
 
 alias du='duf'
+
+alias top='btop'
