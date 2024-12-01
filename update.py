@@ -1,41 +1,72 @@
 import argparse
 import os
 import shutil
+import logging
 
-parser = argparse.ArgumentParser(description='')
+# 设置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-parser.add_argument('--kitty', required=False, action='store_true', help='update the kitty configuration')
-parser.add_argument('--omf', required=False, action='store_true', help='update the oh my fish init script')
-parser.add_argument('--rime', required=False, action='store_true', help='update the rime configuration')
+def parse_args():
+    parser = argparse.ArgumentParser(description='Update configuration scripts.')
+    parser.add_argument('--kitty', required=False, action='store_true', help='update the kitty configuration')
+    parser.add_argument('--omf', required=False, action='store_true', help='update the oh my fish init script')
+    parser.add_argument('--rime', required=False, action='store_true', help='update the rime configuration')
+    parser.add_argument('--vimrc', required=False, action='store_true', help='update all configurations')
+    return parser.parse_args()
 
-# 定义目录
-current_dir = os.getcwd()
-home_dir = os.path.expanduser('~')
+def get_config_paths():
+    home_dir = os.path.expanduser('~')
+    return {
+        'kitty': os.path.join(home_dir, '.config', 'kitty', 'kitty.conf'),
+        'omf': os.path.join(home_dir, '.config', 'omf', 'init.fish'),
+        'rime': os.path.join(home_dir, '.config', 'ibus', 'rime'),
+        'vimrc': os.path.join(home_dir, '.vimrc')
+    }
 
-kitty_config_dir = os.path.join(home_dir, '.config', 'kitty', 'kitty.conf') # ~/.config/kitty/kitty.conf
-omf_init_dir = os.path.join(home_dir, '.config', 'omf', 'init.fish') # ~/.config/omf/init.fish
-rime_dir = os.path.join(home_dir, '.config', 'ibus', 'rime') # ~/.config/ibus/rime/*
-
-args = parser.parse_args()
-
-# 根据布尔值复制文件
-if args.kitty:
+def copy_file(src, dst):
+    if os.path.exists(dst):
+        logging.warning(f"Backup existing configuration file: {dst}")
+        shutil.copy(dst, dst + ".bak")
     try:
-        shutil.copy(os.path.join(current_dir, 'kitty.conf'), kitty_config_dir)
-        print(f"kitty.conf has been copied to {kitty_config_dir}")
+        shutil.copy(src, dst)
+        logging.info(f"{os.path.basename(src)} has been copied to {dst}")
     except Exception as e:
-        print(f"An error occurred while copying kitty.conf: {e}")
+        logging.error(f"An error occurred while copying {os.path.basename(src)}: {e}")
 
-if args.omf:
+def copy_directory(src, dst):
+    if os.path.exists(dst):
+        logging.warning(f"Backup existing configuration directory: {dst}")
+        shutil.copytree(dst, dst + ".bak")
     try:
-        shutil.copy(os.path.join(current_dir, 'omf', 'init.fish'), omf_init_dir)
-        print(f"init.fish has been copied to {omf_init_dir}")
+        shutil.copytree(src, dst)
+        logging.info(f"{os.path.basename(src)} has been copied to {dst}")
     except Exception as e:
-        print(f"An error occurred while copying init.fish: {e}")
+        logging.error(f"An error occurred while copying {os.path.basename(src)}: {e}")
 
-if args.rime:
-    try:
-        shutil.copytree(os.path.join(current_dir, 'rime'), rime_dir)
-        print(f"rime has been copied to {rime_dir}")
-    except Exception as e:
-        print(f"An error occurred while copying rime: {e}")
+def main():
+    args = parse_args()
+    config_paths = get_config_paths()
+    current_dir = os.getcwd()
+
+    if args.kitty:
+        src = os.path.join(current_dir, 'kitty.conf')
+        dst = config_paths['kitty']
+        copy_file(src, dst)
+
+    if args.omf:
+        src = os.path.join(current_dir, 'omf', 'init.fish')
+        dst = config_paths['omf']
+        copy_file(src, dst)
+
+    if args.rime:
+        src = os.path.join(current_dir, 'rime')
+        dst = config_paths['rime']
+        copy_directory(src, dst)
+
+    if args.vimrc:
+        src = os.path.join(current_dir, 'vim', '.vimrc')
+        dst = config_paths['vimrc']
+        copy_file(src, dst)
+
+if __name__ == '__main__':
+    main()
