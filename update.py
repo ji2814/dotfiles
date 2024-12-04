@@ -26,7 +26,7 @@ def get_config_paths():
     home_dir = os.path.expanduser('~')
     return {
         'kitty': os.path.join(home_dir, '.config', 'kitty', 'kitty.conf'),
-        'fish': os.path.join(home_dir, '.config', 'fish', 'config.fish'),
+        'fish': os.path.join(home_dir, '.config', 'fish'),
         'rime': os.path.join(home_dir, '.config', 'ibus', 'rime'),
         'vimrc': os.path.join(home_dir, '.vimrc')
     }
@@ -62,14 +62,14 @@ def main():
     current_dir = os.getcwd()
 
     if args.kitty:
-        src = os.path.join(current_dir, 'kitty.conf')
+        src = os.path.join(current_dir, 'kitty', 'kitty.conf')
         dst = config_paths['kitty']
         copy_file(src, dst)
 
     if args.fish:
-        src = os.path.join(current_dir, 'config.fish')
+        src = os.path.join(current_dir, 'fish')
         dst = config_paths['fish']
-        copy_file(src, dst)
+        copy_directory(src, dst)
 
     if args.rime:
         src = os.path.join(current_dir, 'rime')
