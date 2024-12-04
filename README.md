@@ -5,6 +5,6 @@ kitty config: ~/.config/kitty/kitty.conf # kitty is a terminal, the `kitty.confi
 
 Rime config: ~/.config/ibus/rime/* # the input keyboard.
 
-oh my fish: ~/.config/omf/init.fish # the fish framework, about themes and plugin, the `init.fish` is the scripe before the shell start.
+Fish shell config: ~/.config/fish/config.fish
 
 .vimrc: ~/.vimrc # the vim edit config.

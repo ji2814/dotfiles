@@ -63,4 +63,8 @@ set noerrorbells visualbell t_vb=
 " sometimes be convenient.
 set mouse+=a
 
+" the tab is 4 space
+set ts=4
 
+" 最后一个字符
+set virtualedit=onemore

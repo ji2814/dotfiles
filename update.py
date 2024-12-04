@@ -4,24 +4,33 @@ import shutil
 import logging
 
 # 设置日志
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Update configuration scripts.')
-    parser.add_argument('--kitty', required=False, action='store_true', help='update the kitty configuration')
-    parser.add_argument('--omf', required=False, action='store_true', help='update the oh my fish init script')
-    parser.add_argument('--rime', required=False, action='store_true', help='update the rime configuration')
-    parser.add_argument('--vimrc', required=False, action='store_true', help='update all configurations')
+    parser = argparse.ArgumentParser(
+        description='Update configuration scripts.')
+    parser.add_argument('--kitty', required=False,
+                        action='store_true', help='update the kitty configuration')
+    parser.add_argument('--fish', required=False, action='store_true',
+                        help='update the fish shell init script')
+    parser.add_argument('--rime', required=False,
+                        action='store_true', help='update the rime configuration')
+    parser.add_argument('--vimrc', required=False,
+                        action='store_true', help='update all configurations')
     return parser.parse_args()
+
 
 def get_config_paths():
     home_dir = os.path.expanduser('~')
     return {
         'kitty': os.path.join(home_dir, '.config', 'kitty', 'kitty.conf'),
-        'omf': os.path.join(home_dir, '.config', 'omf', 'init.fish'),
+        'fish': os.path.join(home_dir, '.config', 'fish', 'config.fish'),
         'rime': os.path.join(home_dir, '.config', 'ibus', 'rime'),
         'vimrc': os.path.join(home_dir, '.vimrc')
     }
+
 
 def copy_file(src, dst):
     if os.path.exists(dst):
@@ -31,7 +40,9 @@ def copy_file(src, dst):
         shutil.copy(src, dst)
         logging.info(f"{os.path.basename(src)} has been copied to {dst}")
     except Exception as e:
-        logging.error(f"An error occurred while copying {os.path.basename(src)}: {e}")
+        logging.error(
+            f"An error occurred while copying {os.path.basename(src)}: {e}")
+
 
 def copy_directory(src, dst):
     if os.path.exists(dst):
@@ -41,7 +52,9 @@ def copy_directory(src, dst):
         shutil.copytree(src, dst)
         logging.info(f"{os.path.basename(src)} has been copied to {dst}")
     except Exception as e:
-        logging.error(f"An error occurred while copying {os.path.basename(src)}: {e}")
+        logging.error(
+            f"An error occurred while copying {os.path.basename(src)}: {e}")
+
 
 def main():
     args = parse_args()
@@ -53,9 +66,9 @@ def main():
         dst = config_paths['kitty']
         copy_file(src, dst)
 
-    if args.omf:
-        src = os.path.join(current_dir, 'omf', 'init.fish')
-        dst = config_paths['omf']
+    if args.fish:
+        src = os.path.join(current_dir, 'config.fish')
+        dst = config_paths['fish']
         copy_file(src, dst)
 
     if args.rime:
@@ -67,6 +80,7 @@ def main():
         src = os.path.join(current_dir, 'vim', '.vimrc')
         dst = config_paths['vimrc']
         copy_file(src, dst)
+
 
 if __name__ == '__main__':
     main()
